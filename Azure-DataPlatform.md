@@ -1,5 +1,3 @@
-Here's a simple diagram illustrating the relationship between a Data Platform and Azure DevOps:
-
 ```
         +--------------------------+       +-------------------------------+
         |                          |       |                               |
@@ -84,6 +82,8 @@ Explanation:
 
 - `environments/`: This directory contains environment-specific configurations for different environments like development, staging, and production.
 - `modules/`: This directory contains reusable Terraform modules for different components of the Data Platform such as Data Factory, Synapse, OneLake, and PureView.
+- `pipelines/`: This directory contains YML definitions of pipelines.
+- `helper-scripts/`: This directory contains helper scripts which could be bash or python which could be used in any step of a pipeline.
 - `main.tf`: This file contains the main Terraform configuration for the entire data platform, including resource dependencies and module invocations.
 - `variables.tf`: This file contains global variables that can be used across all environments and modules.
 - `outputs.tf`: This file contains global outputs that provide information about resources provisioned by the data platform.
