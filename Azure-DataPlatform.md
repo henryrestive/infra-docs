@@ -48,11 +48,11 @@ data-platform/
 │       └── outputs.tf           # Outputs specific to the production environment
 ├── modules/
 │   ├── azure-common/
-│   │   │   ├── main.tf              # Main configuration for Azure Common Infra: VNet, Resource Group, KeyVault
-│   │   │   ├── variables.tf         # Variables for the Azure Common Infra module
-│   │   │   └── outputs.tf           # Outputs for the Azure Common Infra module
+│   │   │   ├── main.tf          # Main configuration for Azure Common Infra: VNet, Resource Group, KeyVault
+│   │   │   ├── variables.tf     # Variables for the Azure Common Infra module
+│   │   │   └── outputs.tf       # Outputs for the Azure Common Infra module
 │   ├── data-factory/
-│   │   ├── main.tf              # Main configuration for Azure Data Factory module
+│   │   ├── main.tf              # Main configuration for Azure Data Factory module: DataSet, Linked Service, Pipelines
 │   │   ├── variables.tf         # Variables for the Azure Data Factory module
 │   │   └── outputs.tf           # Outputs for the Azure Data Factory module
 │   ├── synapse/
@@ -68,11 +68,13 @@ data-platform/
 │       ├── variables.tf         # Variables for the Azure PureView module
 │       └── outputs.tf           # Outputs for the Azure PureView module
 ├── pipelines/
-│   ├── entry-gate-pipeline.yml  # Entry gate data pipeline definition
-│   ├── master-data/             # Pipeline definitions of resources under master data
+│   ├── entry-gate/              # Pipeline definitions (yml) of resources under entry gate
 │   │   └── ... 
-│   ├── control-data-plane/      # Pipeline definitions of resources under control plane
-│   │   └── ...
+│   ├── master-data/             # Pipeline definitions (yml) of resources under master data
+│   │   └── ... 
+│   └── control-data-plane/      # Pipeline definitions (yml) of resources under control plane
+│       └── ...
+├── helper-scripts/              # helper scripts in bash/python 
 ├── main.tf                      # Main Terraform configuration for the entire data platform
 ├── variables.tf                 # Global variables for the entire data platform
 └── outputs.tf                   # Global outputs for the entire data platform
