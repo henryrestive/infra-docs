@@ -86,6 +86,22 @@ Explanation:
 - `main.tf`: This file contains the main Terraform configuration for the entire data platform, including resource dependencies and module invocations.
 - `variables.tf`: This file contains global variables that can be used across all environments and modules.
 - `outputs.tf`: This file contains global outputs that provide information about resources provisioned by the data platform.
+- `terraform.tfstate` should be stored remotely in an Azure Storage Account provided by Viva cloud team, we will configure terraform backend accordingly:
+
+```
+RESOURCE_GROUP_NAME=tfstate
+STORAGE_ACCOUNT_NAME=tfstate$RANDOM
+CONTAINER_NAME=tfstate
+
+# Create resource group
+az group create --name $RESOURCE_GROUP_NAME --location eastus
+
+# Create storage account
+az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+
+# Create blob container
+az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
+```
 
 # Approach 1: VM Agents pool for pipeline
 ---
