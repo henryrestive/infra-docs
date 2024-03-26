@@ -148,9 +148,9 @@ Explanation:
      }
 
      os_profile {
-       computer_name  = "hostname" # Value from variable
-       admin_username = "adminuser" # Value from variable
-       admin_password = "Password123!" # Value from variable
+       computer_name  = "var.host_name" # Value from variable
+       admin_username = "var.admin_user" # Value from variable
+       admin_password = "var.admin_pwd" # Value from variable
      }
 
      os_profile_linux_config {
@@ -261,9 +261,9 @@ resource "kubernetes_secret" "azure_credentials" {
     name = "azure-credentials"
   }
   data = {
-    client-id     = "your-client-id" # value from variables
-    client-secret = "your-client-secret" # value from variables
-    tenant-id     = "your-tenant-id" # value from variables
+    client-id     = var.your_client_id # value from variables
+    client-secret = var.your_client_secret # value from variables
+    tenant-id     = var.your_tenant_id # value from variables
   }
 }
 
