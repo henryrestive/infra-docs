@@ -25,7 +25,7 @@ In this diagram:
 
 This diagram illustrates the integration between the Data Platform and Azure DevOps, where infrastructure changes and application deployments are managed and automated using Azure DevOps pipelines.
 
-# Git Repoitory Structure
+# Git Repository Structure
 ---
 
 When structuring a Terraform project for a Data Platform on Azure, it's important to organize your files and directories in a way that promotes modularity, reusability, and maintainability. Here's a suggested folder structure for such a project:
@@ -123,9 +123,9 @@ This folder structure allows you to easily manage environment-specific configura
 
    resource "azurerm_virtual_machine" "custom_image_vm" {
      name                  = "custom-vm"
-     location              = "East US"
-     resource_group_name   = azurerm_resource_group.example.name
-     network_interface_ids = [azurerm_network_interface.example.id]
+     location              = "Australia Southeast"
+     resource_group_name   = azurerm_resource_group.data_platform.name
+     network_interface_ids = [azurerm_network_interface.data_platform.id]
      vm_size               = "Standard_DS2_v2"
 
      storage_image_reference {
@@ -136,9 +136,9 @@ This folder structure allows you to easily manage environment-specific configura
      }
 
      os_profile {
-       computer_name  = "hostname"
-       admin_username = "adminuser"
-       admin_password = "Password123!"
+       computer_name  = "hostname" # Value from variable
+       admin_username = "adminuser" # Value from variable
+       admin_password = "Password123!" # Value from variable
      }
 
      os_profile_linux_config {
@@ -249,20 +249,20 @@ resource "kubernetes_secret" "azure_credentials" {
     name = "azure-credentials"
   }
   data = {
-    client-id     = "your-client-id"
-    client-secret = "your-client-secret"
-    tenant-id     = "your-tenant-id"
+    client-id     = "your-client-id" # value from variables
+    client-secret = "your-client-secret" # value from variables
+    tenant-id     = "your-tenant-id" # value from variables
   }
 }
 
 # Define AKS cluster
-resource "azurerm_kubernetes_cluster" "example" {
-  name                = "example-aks-cluster"
-  location            = "East US"
-  resource_group_name = "example-resources"
-  dns_prefix          = "exampleaks"
+resource "azurerm_kubernetes_cluster" "data_platform" {
+  name                = "dp-aks-cluster"
+  location            = "Australia Southeast"
+  resource_group_name = "dp-resources"
+  dns_prefix          = "dpaks"
   kubernetes_version  = "1.21.2"
-  node_resource_group = "example-node-resources"
+  node_resource_group = "dp-node-resources"
 
   default_node_pool {
     name            = "default"
@@ -283,17 +283,17 @@ resource "azurerm_kubernetes_cluster" "example" {
 }
 
 # Define Azure DevOps agent pool
-resource "azurerm_devops_agent_pool" "example" {
-  project_id    = azurerm_devops_project.example.id
-  name          = "example-agent-pool"
+resource "azurerm_devops_agent_pool" "data_platform" {
+  project_id    = azurerm_devops_project.data_platform.id
+  name          = "data_platform-agent-pool"
   agent_pool_type = "Kubernetes"
 
   kubernetes {
     kube_config {
-      host                   = azurerm_kubernetes_cluster.example.kube_config[0].host
-      client_certificate     = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_certificate)
-      client_key             = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_key)
-      cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].cluster_ca_certificate)
+      host                   = azurerm_kubernetes_cluster.data_platform.kube_config[0].host
+      client_certificate     = base64decode(azurerm_kubernetes_cluster.data_platform.kube_config[0].client_certificate)
+      client_key             = base64decode(azurerm_kubernetes_cluster.data_platform.kube_config[0].client_key)
+      cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.data_platform.kube_config[0].cluster_ca_certificate)
     }
   }
   container_image = "myregistry.azurecr.io/mydockerimage:latest"
@@ -301,8 +301,8 @@ resource "azurerm_devops_agent_pool" "example" {
 }
 
 # Define Azure DevOps project
-resource "azurerm_devops_project" "example" {
-  name     = "example-project"
+resource "azurerm_devops_project" "data_platform" {
+  name     = "data-platform-project"
   visibility = "public"
   capabilities {
     version_control {
