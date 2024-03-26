@@ -78,6 +78,41 @@ resource "azurerm_data_factory_linked_service_azure_blob_storage" "example" {
   connection_string       = data.azurerm_key_vault_secret.storage_account_connection_string.value
   type                    = "AzureBlobStorage"
 }
+
+resource "azurerm_data_factory_dataset_azure_sql_table" "example_input" {
+  name                  = "InputDataset"
+  data_factory_name     = azurerm_data_factory.example.name
+  resource_group_name   = azurerm_resource_group.example.name
+  linked_service_name   = azurerm_data_factory_linked_service_azure_sql_database.example.name
+  table_name            = "YourTableName"  # Replace with your SQL table name
+}
+
+resource "azurerm_data_factory_dataset_azure_blob_storage" "example_output" {
+  name                  = "OutputDataset"
+  data_factory_name     = azurerm_data_factory.example.name
+  resource_group_name   = azurerm_resource_group.example.name
+  linked_service_name   = azurerm_data_factory_linked_service_azure_blob_storage.example.name
+  folder_path           = "output"  # Replace with your output folder path
+  file_name             = "output.csv"  # Replace with your output file name
+}
+
+resource "azurerm_data_factory_pipeline" "example" {
+  name                = "example-pipeline"
+  data_factory_name   = azurerm_data_factory.example.name
+  resource_group_name = azurerm_resource_group.example.name
+
+  activities {
+    name           = "CopyDataActivity"
+    type           = "Copy"
+    linked_service_name = azurerm_sql_database.example.name
+    inputs {
+      reference_name = "InputDataset"
+    }
+    outputs {
+      reference_name = "OutputDataset"
+    }
+  }
+}
 ```
 
 In this modified script:
@@ -85,6 +120,8 @@ In this modified script:
 1. The `azurerm_key_vault_secret` data source is used to fetch the SQL Server administrator login, SQL Server administrator password, and storage account connection string from Azure Key Vault.
 
 2. These fetched values are then used in the respective resources using `data.azurerm_key_vault_secret.<secret_name>.value`.
+
+2. A pipeline is defined with a copy data activity that moves data from the SQL table to the Blob Storage output.
 
 Make sure to provide the correct `var.key_vault_id` value, which should be the resource ID of your Azure Key Vault. Additionally, ensure that the secret names in the Azure Key Vault match the names used in the Terraform script.
 
