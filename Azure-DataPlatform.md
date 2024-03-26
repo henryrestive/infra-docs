@@ -214,6 +214,17 @@ RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
 RUN curl -sL https://aka.ms/InstallAzureDevOpsCli | bash && \
     azdevops --version
 
+# Set environment variables for service principal authentication (injected from Azure KeyVault through env via AKS yml)
+ENV AZURE_CLIENT_ID=<client-id>
+ENV AZURE_CLIENT_SECRET=<client-secret>
+ENV AZURE_TENANT_ID=<tenant-id>
+
+# Log in to Azure using service principal
+RUN az login --service-principal --username $AZURE_CLIENT_ID --password $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+
+# Set Azure CLI context
+RUN az account set --subscription <subscription-id>
+
 # Run a shell to keep container running
 CMD ["/bin/bash"]
 ```
@@ -231,6 +242,17 @@ Here's a basic example of how you might define these resources in Terraform:
 ```hcl
 provider "azurerm" {
   features {}
+}
+
+resource "kubernetes_secret" "azure_credentials" {
+  metadata {
+    name = "azure-credentials"
+  }
+  data = {
+    client-id     = "your-client-id"
+    client-secret = "your-client-secret"
+    tenant-id     = "your-tenant-id"
+  }
 }
 
 # Define AKS cluster
@@ -275,6 +297,7 @@ resource "azurerm_devops_agent_pool" "example" {
     }
   }
   container_image = "myregistry.azurecr.io/mydockerimage:latest"
+  
 }
 
 # Define Azure DevOps project
