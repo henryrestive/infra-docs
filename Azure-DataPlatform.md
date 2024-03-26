@@ -23,8 +23,6 @@ In this diagram:
 - Infrastructure resources are managed and provisioned using infrastructure as code (IaC) tools like Terraform, and the configuration and deployment process is orchestrated through Azure DevOps pipelines.
 - Azure DevOps pipelines are configured to automate tasks such as deploying infrastructure changes, building and testing code, and deploying applications to various environments.
 
-This diagram illustrates the integration between the Data Platform and Azure DevOps, where infrastructure changes and application deployments are managed and automated using Azure DevOps pipelines.
-
 # Git Repository Structure
 ---
 
@@ -88,8 +86,6 @@ Explanation:
 - `main.tf`: This file contains the main Terraform configuration for the entire data platform, including resource dependencies and module invocations.
 - `variables.tf`: This file contains global variables that can be used across all environments and modules.
 - `outputs.tf`: This file contains global outputs that provide information about resources provisioned by the data platform.
-
-This folder structure allows you to easily manage environment-specific configurations, reuse Terraform modules across different environments, and maintain a clear separation of concerns between different components of the data platform.
 
 # Approach 1: VM Agents pool for pipeline
 ---
@@ -237,7 +233,7 @@ To instruct an Azure DevOps agent pool to run on an AKS (Azure Kubernetes Servic
 
 3. Link the AKS cluster to the agent pool: You must provide the connection details of the AKS cluster to the Azure DevOps agent pool. This includes the Kubernetes API server URL, the authentication credentials (service principal), and other required configurations.
 
-Here's a basic example of how you might define these resources in Terraform:
+Basic example of these resources in Terraform:
 
 ```hcl
 provider "azurerm" {
