@@ -88,6 +88,7 @@ Explanation:
 - `outputs.tf`: This file contains global outputs that provide information about resources provisioned by the data platform.
 - `terraform.tfstate` should be stored remotely in an Azure Storage Account provided by Viva cloud team, we will configure terraform backend accordingly:
 
+example of how to create a storage account and a blob container using Azure CLI:
   ```
   RESOURCE_GROUP_NAME=tfstate
   STORAGE_ACCOUNT_NAME=tfstate$RANDOM
@@ -103,6 +104,17 @@ Explanation:
   az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
   ```
 
+example of a backend block in a main.tf file:
+```
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "tfstate"
+    storage_account_name = "tfstate12345"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+  }
+}
+```
 # Approach 1: VM Agents pool for pipeline
 ---
            +---------------------+
