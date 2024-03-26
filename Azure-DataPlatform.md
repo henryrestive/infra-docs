@@ -91,7 +91,7 @@ Explanation:
 
 This folder structure allows you to easily manage environment-specific configurations, reuse Terraform modules across different environments, and maintain a clear separation of concerns between different components of the data platform.
 
-# Agents pool for pipeline
+# Approach 1: VM Agents pool for pipeline
 ---
            +---------------------+
            | Azure DevOps        |
@@ -164,4 +164,113 @@ This folder structure allows you to easily manage environment-specific configura
 3. **Use the Agent Pool in Pipelines**:
    When defining your pipelines in Azure DevOps, specify the agent pool that uses the custom image. Pipelines running on agents from this pool will have Terraform, Azure CLI, and Azure DevOps CLI available out of the box.
 
-This approach allows you to use Terraform to provision the VMs and install the required tools directly, eliminating the need for a separate tool like Packer. Adjust the Terraform configuration as needed for your specific requirements and environment.
+# Approach 2: Containerized agents pool for pipeline
+---
+Sure, here's an example of a Dockerfile that installs Terraform CLI, Azure CLI, and Azure DevOps CLI:
+
+```Dockerfile
+FROM ubuntu:latest
+
+# Install required packages
+RUN apt-get update && \
+    apt-get install -y curl gnupg && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Terraform CLI
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
+    echo "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list && \
+    apt-get update && \
+    apt-get install -y terraform && \
+    terraform --version
+
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
+    az --version
+
+# Install Azure DevOps CLI
+RUN curl -sL https://aka.ms/InstallAzureDevOpsCli | bash && \
+    azdevops --version
+
+# Run a shell to keep container running
+CMD ["/bin/bash"]
+```
+
+Now, here's an example of a Terraform configuration for provisioning an Azure DevOps agent pool with Docker container agents:
+
+```hcl
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_devops_agent_pool" "example" {
+  name = "example-agent-pool"
+  project_ids = [
+    "project-id-1",
+    "project-id-2",
+  ]
+}
+
+resource "azurerm_container_registry" "example" {
+  name                     = "exampleacr"
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  sku                      = "Standard"
+  admin_enabled            = true
+}
+
+resource "azurerm_container_group" "example" {
+  name                = "example-container-group"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  os_type             = "Linux"
+
+  container {
+    name   = "agent"
+    image  = "${azurerm_container_registry.example.login_server}/agent-image:latest"
+    cpu    = "0.5"
+    memory = "1.5"
+
+    ports {
+      port     = 80
+      protocol = "TCP"
+    }
+
+    environment_variables = {
+      "AZP_URL"       = "https://dev.azure.com/example"
+      "AZP_TOKEN"     = "your-pat-token"
+      "AZP_POOL"      = azurerm_devops_agent_pool.example.name
+      "AZP_AGENT_NAME" = "agent-${random_id.example.hex}"
+    }
+  }
+
+  tags = {
+    environment = "production"
+  }
+}
+```
+
+And here's the diagram:
+
+```plaintext
+           +---------------------+
+           | Azure DevOps        |
+           | (Azure Pipelines)   |
+           +----------+----------+
+                      |
+             +--------v---------+
+             |   Build/Release  |
+             |   Pipelines      |
+             +--------+---------+
+                      |
+       +--------------v--------------+
+       |                             |
+       |  Azure DevOps Agent Pool   |
+       |  (Provisioned with Terraform)|
+       +--------------+--------------+
+                      |
+            +---------v---------+
+            |    Docker        |
+            |    Container     |
+            +-------------------+
+```
