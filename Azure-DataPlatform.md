@@ -218,56 +218,73 @@ RUN curl -sL https://aka.ms/InstallAzureDevOpsCli | bash && \
 CMD ["/bin/bash"]
 ```
 
-Now, here's an example of a Terraform configuration for provisioning an Azure DevOps agent pool with Docker container agents:
+To instruct an Azure DevOps agent pool to run on an AKS (Azure Kubernetes Service) cluster using Terraform, you would typically follow these steps:
+
+1. Define an AKS cluster in Terraform: Define the AKS cluster resource using the `azurerm_kubernetes_cluster` Terraform provider. You would specify details such as the Kubernetes version, node count, node sizes, networking configurations, etc.
+
+2. Configure the Azure DevOps agent pool to use AKS: When creating or updating the Azure DevOps agent pool resource, you need to specify the `agent_pool_type` as `Kubernetes`. This tells Azure DevOps to use a Kubernetes cluster as the agent pool backend.
+
+3. Link the AKS cluster to the agent pool: You must provide the connection details of the AKS cluster to the Azure DevOps agent pool. This includes the Kubernetes API server URL, the authentication credentials (service principal), and other required configurations.
+
+Here's a basic example of how you might define these resources in Terraform:
 
 ```hcl
 provider "azurerm" {
   features {}
 }
 
-resource "azurerm_devops_agent_pool" "example" {
-  name = "example-agent-pool"
-  project_ids = [
-    "project-id-1",
-    "project-id-2",
-  ]
-}
+# Define AKS cluster
+resource "azurerm_kubernetes_cluster" "example" {
+  name                = "example-aks-cluster"
+  location            = "East US"
+  resource_group_name = "example-resources"
+  dns_prefix          = "exampleaks"
+  kubernetes_version  = "1.21.2"
+  node_resource_group = "example-node-resources"
 
-resource "azurerm_container_registry" "example" {
-  name                     = "exampleacr"
-  resource_group_name      = azurerm_resource_group.example.name
-  location                 = azurerm_resource_group.example.location
-  sku                      = "Standard"
-  admin_enabled            = true
-}
+  default_node_pool {
+    name            = "default"
+    node_count      = 3
+    vm_size         = "Standard_DS2_v2"
+    enable_auto_scaling = true
+    min_count = 1
+    max_count = 3
+  }
 
-resource "azurerm_container_group" "example" {
-  name                = "example-container-group"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  os_type             = "Linux"
-
-  container {
-    name   = "agent"
-    image  = "${azurerm_container_registry.example.login_server}/agent-image:latest"
-    cpu    = "0.5"
-    memory = "1.5"
-
-    ports {
-      port     = 80
-      protocol = "TCP"
-    }
-
-    environment_variables = {
-      "AZP_URL"       = "https://dev.azure.com/example"
-      "AZP_TOKEN"     = "your-pat-token"
-      "AZP_POOL"      = azurerm_devops_agent_pool.example.name
-      "AZP_AGENT_NAME" = "agent-${random_id.example.hex}"
-    }
+  identity {
+    type = "SystemAssigned"
   }
 
   tags = {
-    environment = "production"
+    environment = "Production"
+  }
+}
+
+# Define Azure DevOps agent pool
+resource "azurerm_devops_agent_pool" "example" {
+  project_id    = azurerm_devops_project.example.id
+  name          = "example-agent-pool"
+  agent_pool_type = "Kubernetes"
+
+  kubernetes {
+    kube_config {
+      host                   = azurerm_kubernetes_cluster.example.kube_config[0].host
+      client_certificate     = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_certificate)
+      client_key             = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].client_key)
+      cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.example.kube_config[0].cluster_ca_certificate)
+    }
+  }
+  container_image = "myregistry.azurecr.io/mydockerimage:latest"
+}
+
+# Define Azure DevOps project
+resource "azurerm_devops_project" "example" {
+  name     = "example-project"
+  visibility = "public"
+  capabilities {
+    version_control {
+      source_control_type = "Git"
+    }
   }
 }
 ```
