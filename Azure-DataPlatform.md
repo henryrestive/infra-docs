@@ -166,7 +166,29 @@ This folder structure allows you to easily manage environment-specific configura
 
 # Approach 2: Containerized agents pool for pipeline
 ---
-Sure, here's an example of a Dockerfile that installs Terraform CLI, Azure CLI, and Azure DevOps CLI:
+
+```plaintext
+           +---------------------+
+           | Azure DevOps        |
+           | (Azure Pipelines)   |
+           +----------+----------+
+                      |
+             +--------v---------+
+             |   Build/Release  |
+             |   Pipelines      |
+             +--------+---------+
+                      |
+       +--------------v--------------+
+       |                             |
+       |  Azure DevOps Agent Pool   |
+       |  (Provisioned with Terraform)|
+       +--------------+--------------+
+                      |
+            +---------v---------+
+            |    Docker        |
+            |    Container     |
+            +-------------------+
+```
 
 ```Dockerfile
 FROM ubuntu:latest
@@ -248,29 +270,4 @@ resource "azurerm_container_group" "example" {
     environment = "production"
   }
 }
-```
-
-And here's the diagram:
-
-```plaintext
-           +---------------------+
-           | Azure DevOps        |
-           | (Azure Pipelines)   |
-           +----------+----------+
-                      |
-             +--------v---------+
-             |   Build/Release  |
-             |   Pipelines      |
-             +--------+---------+
-                      |
-       +--------------v--------------+
-       |                             |
-       |  Azure DevOps Agent Pool   |
-       |  (Provisioned with Terraform)|
-       +--------------+--------------+
-                      |
-            +---------v---------+
-            |    Docker        |
-            |    Container     |
-            +-------------------+
 ```
