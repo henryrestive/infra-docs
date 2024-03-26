@@ -67,10 +67,15 @@ data-platform/
 │       ├── main.tf              # Main configuration for Azure PureView module
 │       ├── variables.tf         # Variables for the Azure PureView module
 │       └── outputs.tf           # Outputs for the Azure PureView module
+├── pipelines/
+│   ├── entry-gate-pipeline.yml  # Entry gate data pipeline definition
+│   ├── master-data/             # Pipeline definitions of resources under master data
+│   │   └── ... 
+│   ├── control-data-plane/      # Pipeline definitions of resources under control plane
+│   │   └── ...
 ├── main.tf                      # Main Terraform configuration for the entire data platform
 ├── variables.tf                 # Global variables for the entire data platform
-├── outputs.tf                   # Global outputs for the entire data platform
-└── azure-pipeline.yml           # Azure Pipeline Definition
+└── outputs.tf                   # Global outputs for the entire data platform
 ```
 
 Explanation:
