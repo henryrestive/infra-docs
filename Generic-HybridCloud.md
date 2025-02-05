@@ -45,10 +45,12 @@ graph TB
         end
     end
 
+    %% External entities
     Customers((Customers))
     Employees((Employees))
     ExternalSystems((External Systems))
 
+    %% Connections
     CApp & EApp --> BFF
     BFF --> Gateway
     BSM & CustomAPI --> Gateway
@@ -62,10 +64,8 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    ContainerPlatform --> CloudNet
+    Infrastructure --> CloudNet
     CloudNet --> ContainerService
-    BSM --> CloudNet
-    CustomAPI --> CloudNet
     CloudNet --> EventBus
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;

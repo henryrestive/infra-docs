@@ -45,10 +45,12 @@ graph TB
         end
     end
 
+    %% External entities
     Customers((Customers))
     Employees((Employees))
     ExternalSystems((External Systems))
 
+    %% Connections
     CApp & EApp --> BFF
     BFF --> Gateway
     BSM & CustomAPI --> Gateway
@@ -62,10 +64,8 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    ContainerPlatform --> VPC
+    Infrastructure --> VPC
     VPC --> GKE
-    BSM --> VPC
-    CustomAPI --> VPC
     VPC --> PubSub
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
