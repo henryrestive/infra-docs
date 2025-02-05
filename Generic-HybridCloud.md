@@ -64,7 +64,7 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    Infrastructure --> CloudNet
+    Infrastructure --> Network
     CloudNet --> ContainerService
     CloudNet --> EventBus
 

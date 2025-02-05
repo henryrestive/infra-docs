@@ -64,9 +64,9 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    Infrastructure --> VPC
-    VPC --> EKS
-    VPC --> MSK
+    Infrastructure --> Network
+    Network --> EKS
+    Network --> MSK
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
 ```

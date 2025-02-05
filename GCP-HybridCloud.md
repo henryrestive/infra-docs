@@ -64,7 +64,7 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    Infrastructure --> VPC
+    Infrastructure --> Network
     VPC --> GKE
     VPC --> PubSub
 
