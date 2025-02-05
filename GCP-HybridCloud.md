@@ -25,13 +25,14 @@ graph TB
             ContainerPlatform[Primary Container Platform]
             PrimaryDB[(Primary Databases)]
             PrimaryStorage[Primary Storage Systems]
+            CacheService[(Cache Service)]
         end
     end
 
     subgraph GCP[Google Cloud]
         direction TB
-        subgraph Compute[Backup/Burst Services]
-            GKE[GKE for DR/Burst]
+        subgraph Compute[Container Services]
+            GKE[Google Kubernetes Engine]
         end
         
         subgraph Data[DR/Backup Services]
@@ -66,7 +67,8 @@ graph TB
     ContainerPlatform --> ServersFarm
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
-    ContainerPlatform <-.->|Burst/DR| GKE
+    ContainerPlatform --> CacheService
+    ContainerPlatform <-.->|Container Orchestration| GKE
     PrimaryDB <-.->|Backup/DR| CloudSQL
     PrimaryStorage <-.->|Backup/DR| CloudStorage
     BSM & CustomAPI <--> PubSub
@@ -107,22 +109,15 @@ graph TB
    - Workload management
 
 ### GCP Cloud Components
-1. **Backup/Burst Services**
-   - **GKE for DR/Burst**: Google Kubernetes Engine for backup and scaling
-   - Handles overflow capacity
-   - Supports disaster recovery
+1. **Container Services**
+   - **GKE**: Google Kubernetes Engine for container orchestration
 
-2. **DR/Backup Services**
-   - **Cloud SQL Backup**: Database backup and replication
-   - **Cloud Storage Backup**: Object storage backup
-   - **Memory Store**: In-memory data caching
-
-3. **Event Services**
+2. **Event Services**
    - **Pub/Sub**: Managed message queue service
    - Event streaming platform
    - Asynchronous messaging
 
-4. **Networking**
+3. **Networking**
    - **Cloud VPC**: Virtual network infrastructure
    - **Cloud DNS**: Domain name services
 

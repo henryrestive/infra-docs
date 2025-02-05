@@ -25,19 +25,14 @@ graph TB
             ContainerPlatform[Primary Container Platform]
             PrimaryDB[(Primary Databases)]
             PrimaryStorage[Primary Storage Systems]
+            CacheService[(Cache Service)]
         end
     end
 
     subgraph AWS[AWS Cloud]
         direction TB
-        subgraph Compute[Backup/Burst Services]
-            EKS[EKS for DR/Burst]
-        end
-        
-        subgraph Data[DR/Backup Services]
-            RDS[(RDS Backup)]
-            S3[(S3 Backup Storage)]
-            ElastiCache[(ElastiCache)]
+        subgraph Compute[Container Services]
+            EKS[Amazon EKS]
         end
         
         subgraph Messaging[Event Services]
@@ -66,9 +61,8 @@ graph TB
     ContainerPlatform --> ServersFarm
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
-    ContainerPlatform <-.->|Burst/DR| EKS
-    PrimaryDB <-.->|Backup/DR| RDS
-    PrimaryStorage <-.->|Backup/DR| S3
+    ContainerPlatform --> CacheService
+    ContainerPlatform <-.->|Container Orchestration| EKS
     BSM & CustomAPI <--> MSK
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
@@ -107,22 +101,15 @@ graph TB
    - Workload management
 
 ### AWS Cloud Components
-1. **Backup/Burst Services**
-   - **EKS for DR/Burst**: Elastic Kubernetes Service for backup and scaling
-   - Handles overflow capacity
-   - Supports disaster recovery
+1. **Container Services**
+   - **EKS**: Elastic Kubernetes Service for container orchestration
 
-2. **DR/Backup Services**
-   - **RDS Backup**: Database backup and replication
-   - **S3 Backup Storage**: Object storage backup
-   - **ElastiCache**: In-memory data caching
-
-3. **Event Services**
+2. **Event Services**
    - **MSK**: Managed Kafka service
    - Event streaming platform
    - Asynchronous messaging
 
-4. **Networking**
+3. **Networking**
    - **VPC**: Virtual Private Cloud infrastructure
    - **Route53**: DNS and routing services
 

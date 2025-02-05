@@ -25,19 +25,14 @@ graph TB
             ContainerPlatform[Primary Container Platform]
             PrimaryDB[(Primary Databases)]
             PrimaryStorage[Primary Storage Systems]
+            CacheService[(Cache Service)]
         end
     end
 
     subgraph Cloud[Public Cloud]
         direction TB
-        subgraph Compute[Backup/Burst Services]
-            BackupContainers[Backup Container Service]
-        end
-        
-        subgraph Data[DR/Backup Services]
-            BackupDB[(Backup Databases)]
-            BackupStorage[(Backup Storage)]
-            Cache[(Cache Service)]
+        subgraph Compute[Container Services]
+            ContainerService[Container Orchestration Service]
         end
         
         subgraph Messaging[Event Services]
@@ -66,9 +61,8 @@ graph TB
     ContainerPlatform --> ServersFarm
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
-    ContainerPlatform <-.->|Burst/DR| BackupContainers
-    PrimaryDB <-.->|Backup/DR| BackupDB
-    PrimaryStorage <-.->|Backup/DR| BackupStorage
+    ContainerPlatform --> CacheService
+    ContainerPlatform <-.->|Container Orchestration| ContainerService
     BSM & CustomAPI <--> EventBus
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
@@ -107,22 +101,15 @@ graph TB
    - Manages application processing needs
 
 ### Cloud Components
-1. **Backup/Burst Services**
-   - **Backup Container Service**: Secondary container platform for DR and scaling
-   - Provides burst capacity during peak loads
-   - Supports development and testing environments
+1. **Container Services**
+   - **Container Orchestration Service**: Managed Kubernetes service for container orchestration
 
-2. **DR/Backup Services**
-   - **Backup Databases**: Secondary database systems for DR
-   - **Backup Storage**: Secondary storage for data protection
-   - **Cache Service**: Distributed caching for performance
-
-3. **Event Services**
+2. **Event Services**
    - **Message/Event Bus**: Enterprise messaging and event streaming
    - Enables asynchronous communication
    - Supports event-driven architecture
 
-4. **Networking**
+3. **Networking**
    - **Cloud Network**: Cloud connectivity services
    - **DNS Services**: Domain name resolution and routing
 
