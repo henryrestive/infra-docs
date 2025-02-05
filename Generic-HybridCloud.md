@@ -20,10 +20,12 @@ graph TB
             Gateway[API Gateway]
         end
         
-        ContainerPlatform[Primary Container Platform]
-        ServersFarm[Servers Farm]
-        PrimaryDB[(Primary Databases)]
-        PrimaryStorage[Primary Storage Systems]
+        subgraph Infrastructure[Infrastructure Layer]
+            ServersFarm[Servers Farm]:::serversFarm
+            ContainerPlatform[Primary Container Platform]
+            PrimaryDB[(Primary Databases)]
+            PrimaryStorage[Primary Storage Systems]
+        end
     end
 
     subgraph Cloud[Public Cloud]
@@ -66,6 +68,8 @@ graph TB
     PrimaryDB <-.->|Backup/DR| BackupDB
     PrimaryStorage <-.->|Backup/DR| BackupStorage
     BSM & CustomAPI <--> EventBus
+
+    classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
 ```
 
 ## Architecture Components
