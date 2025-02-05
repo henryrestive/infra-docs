@@ -50,7 +50,8 @@ graph TB
         end
     end
 
-    ExternalUsers((External Users))
+    Customers((Customers))
+    Employees((Employees))
     ExternalSystems((External Systems))
 
     CApp & EApp --> BFF
@@ -58,7 +59,8 @@ graph TB
     BSM & CustomAPI --> Gateway
     Gateway --> BSM
     Gateway --> CustomAPI
-    ExternalUsers --> Gateway
+    Customers --> CApp
+    Employees --> EApp
     ExternalSystems --> Gateway
     Apps --> ContainerPlatform
     ContainerPlatform --> ServersFarm
