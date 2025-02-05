@@ -21,9 +21,9 @@ graph TB
         end
         
         ContainerPlatform[Primary Container Platform]
+        ServersFarm[Servers Farm]
         PrimaryDB[(Primary Databases)]
         PrimaryStorage[Primary Storage Systems]
-        ComputeCluster[Compute Cluster]
     end
 
     subgraph Cloud[Public Cloud]
@@ -52,15 +52,16 @@ graph TB
     ExternalSystems((External Systems))
 
     CApp & EApp --> BFF
+    BFF --> Gateway
     BSM & CustomAPI --> Gateway
     Gateway --> BSM
     Gateway --> CustomAPI
     ExternalUsers --> Gateway
     ExternalSystems --> Gateway
-    BFF --> ContainerPlatform
+    Apps --> ContainerPlatform
+    ContainerPlatform --> ServersFarm
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
-    Apps --> ComputeCluster
     ContainerPlatform <-.->|Burst/DR| BackupContainers
     PrimaryDB <-.->|Backup/DR| BackupDB
     PrimaryStorage <-.->|Backup/DR| BackupStorage
@@ -94,7 +95,7 @@ graph TB
    - Business document and media storage
    - Application data storage
 
-5. **Compute Cluster**
+5. **Servers Farm**
    - Main processing infrastructure
    - Hosts compute-intensive workloads
    - Manages application processing needs

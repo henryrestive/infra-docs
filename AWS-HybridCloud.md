@@ -21,9 +21,9 @@ graph TB
         end
         
         ContainerPlatform[Primary Container Platform]
+        ServersFarm[Servers Farm]
         PrimaryDB[(Primary Databases)]
         PrimaryStorage[Primary Storage Systems]
-        ComputeCluster[Compute Cluster]
     end
 
     subgraph AWS[AWS Cloud]
@@ -52,15 +52,16 @@ graph TB
     ExternalSystems((External Systems))
 
     CApp & EApp --> BFF
+    BFF --> Gateway
     BSM & CustomAPI --> Gateway
     Gateway --> BSM
     Gateway --> CustomAPI
     ExternalUsers --> Gateway
     ExternalSystems --> Gateway
-    BFF --> ContainerPlatform
+    Apps --> ContainerPlatform
+    ContainerPlatform --> ServersFarm
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
-    Apps --> ComputeCluster
     ContainerPlatform <-.->|Burst/DR| EKS
     PrimaryDB <-.->|Backup/DR| RDS
     PrimaryStorage <-.->|Backup/DR| S3
@@ -94,7 +95,7 @@ graph TB
    - Business data and documents
    - Application assets
 
-5. **Compute Cluster**
+5. **Servers Farm**
    - Primary compute resources
    - Application processing
    - Workload management
