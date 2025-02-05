@@ -10,9 +10,12 @@ graph TB
     subgraph OnPrem[On-Premises Data Center]
         direction TB
         subgraph Apps[Applications Layer]
-            CX[CX Applications]
-            EApp[E-Applications]
-            API[API Services]
+            CApp[C-App]
+            EApp[E-App]
+            subgraph API[API Services]
+                BSM[Business Support Modules]
+                CustomAPI[Custom APIs]
+            end
             BFF[GraphQL BFF]
             Gateway[API Gateway]
         end
@@ -48,9 +51,10 @@ graph TB
     ExternalUsers((External Users))
     ExternalSystems((External Systems))
 
-    CX & EApp & API --> BFF
-    API --> Gateway
-    Gateway --> API
+    CApp & EApp --> BFF
+    BSM & CustomAPI --> Gateway
+    Gateway --> BSM
+    Gateway --> CustomAPI
     ExternalUsers --> Gateway
     ExternalSystems --> Gateway
     BFF --> ContainerPlatform
@@ -60,7 +64,7 @@ graph TB
     ContainerPlatform <-.->|Burst/DR| BackupContainers
     PrimaryDB <-.->|Backup/DR| BackupDB
     PrimaryStorage <-.->|Backup/DR| BackupStorage
-    API <--> EventBus
+    BSM & CustomAPI <--> EventBus
 ```
 
 ## Architecture Components
