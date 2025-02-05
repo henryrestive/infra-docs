@@ -9,21 +9,29 @@ This document outlines a hybrid cloud architecture leveraging both AWS cloud ser
 graph TB
     subgraph OnPrem[On-Premises Data Center]
         direction TB
-        Apps[Applications]
-        ContainerPlatform[Container Platform]
-        LocalDB[(Local Databases)]
-        LocalStorage[Storage Systems]
+        subgraph Apps[Applications Layer]
+            CX[CX Applications]
+            EApp[E-Applications]
+            API[API Services]
+            BFF[GraphQL BFF]
+            Gateway[API Gateway]
+        end
+        
+        ContainerPlatform[Primary Container Platform]
+        PrimaryDB[(Primary Databases)]
+        PrimaryStorage[Primary Storage Systems]
+        ComputeCluster[Compute Cluster]
     end
 
     subgraph AWS[AWS Cloud]
         direction TB
-        subgraph Compute[Container Services]
-            EKS[Amazon EKS]
+        subgraph Compute[Backup/Burst Services]
+            EKS[EKS for DR/Burst]
         end
         
-        subgraph Data[Data Services]
-            RDS[(Amazon RDS)]
-            S3[(Amazon S3)]
+        subgraph Data[DR/Backup Services]
+            RDS[(RDS Backup)]
+            S3[(S3 Backup Storage)]
             ElastiCache[(ElastiCache)]
         end
         
@@ -37,13 +45,22 @@ graph TB
         end
     end
 
-    OnPrem <--> |Direct Connect/VPN| Network
-    Apps --> ContainerPlatform
-    ContainerPlatform <--> EKS
-    LocalDB <--> RDS
-    LocalStorage <--> S3
-    Apps <--> MSK
-    ContainerPlatform <--> ElastiCache
+    ExternalUsers((External Users))
+    ExternalSystems((External Systems))
+
+    CX & EApp & API --> BFF
+    API --> Gateway
+    Gateway --> API
+    ExternalUsers --> Gateway
+    ExternalSystems --> Gateway
+    BFF --> ContainerPlatform
+    ContainerPlatform --> PrimaryDB
+    ContainerPlatform --> PrimaryStorage
+    Apps --> ComputeCluster
+    ContainerPlatform <-.->|Burst/DR| EKS
+    PrimaryDB <-.->|Backup/DR| RDS
+    PrimaryStorage <-.->|Backup/DR| S3
+    API <--> MSK
 ```
 
 ## Components Description
@@ -92,6 +109,28 @@ graph TB
 - Hybrid integration:
   - Connect on-premises producers/consumers
   - Mirror Maker 2.0 for cluster replication
+
+### 5. API Gateway Services
+- **On-Premises API Gateway**
+  - Central point for API traffic management
+  - Request routing and transformation
+  - Authentication and authorization
+  - Rate limiting and throttling
+  - Integration with existing security systems
+
+- **External Integration Features**
+  - Partner API access
+  - B2B integration
+  - Mobile application support
+  - Third-party system integration
+  - API documentation and developer portal
+
+- **Security Controls**
+  - OAuth2/OIDC integration
+  - API key management
+  - JWT validation
+  - IP whitelisting
+  - WAF protection
 
 ## Implementation Best Practices
 

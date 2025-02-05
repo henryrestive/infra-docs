@@ -9,21 +9,29 @@ This document outlines a hybrid cloud architecture leveraging both Google Cloud 
 graph TB
     subgraph OnPrem[On-Premises Data Center]
         direction TB
-        Apps[Applications]
-        ContainerPlatform[Container Platform]
-        LocalDB[(Local Databases)]
-        LocalStorage[Storage Systems]
+        subgraph Apps[Applications Layer]
+            CX[CX Applications]
+            EApp[E-Applications]
+            API[API Services]
+            BFF[GraphQL BFF]
+            Gateway[API Gateway]
+        end
+        
+        ContainerPlatform[Primary Container Platform]
+        PrimaryDB[(Primary Databases)]
+        PrimaryStorage[Primary Storage Systems]
+        ComputeCluster[Compute Cluster]
     end
 
     subgraph GCP[Google Cloud]
         direction TB
-        subgraph Compute[Container Services]
-            GKE[Google Kubernetes Engine]
+        subgraph Compute[Backup/Burst Services]
+            GKE[GKE for DR/Burst]
         end
         
-        subgraph Data[Data Services]
-            CloudSQL[(Cloud SQL)]
-            CloudStorage[(Cloud Storage)]
+        subgraph Data[DR/Backup Services]
+            CloudSQL[(Cloud SQL Backup)]
+            CloudStorage[(Cloud Storage Backup)]
             MemoryStore[(Memory Store)]
         end
         
@@ -37,13 +45,22 @@ graph TB
         end
     end
 
-    OnPrem <--> |Cloud Interconnect/VPN| Network
-    Apps --> ContainerPlatform
-    ContainerPlatform <--> GKE
-    LocalDB <--> CloudSQL
-    LocalStorage <--> CloudStorage
-    Apps <--> PubSub
-    ContainerPlatform <--> MemoryStore
+    ExternalUsers((External Users))
+    ExternalSystems((External Systems))
+
+    CX & EApp & API --> BFF
+    API --> Gateway
+    Gateway --> API
+    ExternalUsers --> Gateway
+    ExternalSystems --> Gateway
+    BFF --> ContainerPlatform
+    ContainerPlatform --> PrimaryDB
+    ContainerPlatform --> PrimaryStorage
+    Apps --> ComputeCluster
+    ContainerPlatform <-.->|Burst/DR| GKE
+    PrimaryDB <-.->|Backup/DR| CloudSQL
+    PrimaryStorage <-.->|Backup/DR| CloudStorage
+    API <--> PubSub
 ```
 
 ## Core Components
@@ -114,6 +131,28 @@ graph TB
   - Microservices communication
   - Data streaming
   - Analytics pipelines
+
+### 5. API Gateway Infrastructure
+- **Gateway Features**
+  - Centralized API management
+  - Traffic routing and load balancing
+  - Request/response transformation
+  - API versioning
+  - Developer portal integration
+
+- **Integration Capabilities**
+  - REST API support
+  - GraphQL endpoints
+  - WebSocket support
+  - External partner access
+  - Legacy system integration
+
+- **Security Framework**
+  - Authentication services
+  - Authorization policies
+  - Rate limiting
+  - Traffic monitoring
+  - Threat protection
 
 ## Implementation Guidelines
 

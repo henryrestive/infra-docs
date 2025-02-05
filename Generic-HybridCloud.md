@@ -9,7 +9,14 @@ This document outlines a provider-agnostic hybrid cloud architecture that combin
 graph TB
     subgraph OnPrem[On-Premises Data Center]
         direction TB
-        Apps[Applications]
+        subgraph Apps[Applications Layer]
+            CX[CX Applications]
+            EApp[E-Applications]
+            API[API Services]
+            BFF[GraphQL BFF]
+            Gateway[API Gateway]
+        end
+        
         ContainerPlatform[Primary Container Platform]
         PrimaryDB[(Primary Databases)]
         PrimaryStorage[Primary Storage Systems]
@@ -38,13 +45,22 @@ graph TB
         end
     end
 
-    OnPrem <--> |Dedicated Connection/VPN| Network
-    Apps --> ContainerPlatform
+    ExternalUsers((External Users))
+    ExternalSystems((External Systems))
+
+    CX & EApp & API --> BFF
+    API --> Gateway
+    Gateway --> API
+    ExternalUsers --> Gateway
+    ExternalSystems --> Gateway
+    BFF --> ContainerPlatform
+    ContainerPlatform --> PrimaryDB
+    ContainerPlatform --> PrimaryStorage
     Apps --> ComputeCluster
     ContainerPlatform <-.->|Burst/DR| BackupContainers
     PrimaryDB <-.->|Backup/DR| BackupDB
     PrimaryStorage <-.->|Backup/DR| BackupStorage
-    Apps <--> EventBus
+    API <--> EventBus
 ```
 
 
@@ -118,6 +134,29 @@ graph TB
   - Event-driven architecture
   - Real-time processing
   - Data pipelines
+
+### 5. API Gateway
+- **Features**
+  - API traffic management
+  - Request routing and transformation
+  - Authentication and authorization
+  - Rate limiting and throttling
+  - Request/response validation
+  - API documentation
+
+- **Integration Patterns**
+  - REST APIs
+  - GraphQL endpoints
+  - WebSocket APIs
+  - Service mesh integration
+  - External partner integration
+
+- **Security Features**
+  - OAuth2/OIDC integration
+  - API key management
+  - JWT validation
+  - IP whitelisting
+  - WAF integration
 
 ## Implementation Guidelines
 
