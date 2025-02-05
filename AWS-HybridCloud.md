@@ -63,6 +63,65 @@ graph TB
     API <--> MSK
 ```
 
+## Architecture Components
+
+### On-Premises Components
+1. **Applications Layer**
+   - **CX Applications**: Customer experience applications and portals
+   - **E-Applications**: Enterprise business applications and workflows
+   - **API Services**: Internal and external API endpoints
+   - **GraphQL BFF**: Backend-For-Frontend for data aggregation
+   - **API Gateway**: Central entry point for API traffic management
+
+2. **Primary Container Platform**
+   - Main container orchestration environment
+   - Production workload hosting
+   - Container lifecycle management
+
+3. **Primary Databases**
+   - Production databases
+   - Business-critical data storage
+   - Transactional systems
+
+4. **Primary Storage Systems**
+   - Main storage infrastructure
+   - Business data and documents
+   - Application assets
+
+5. **Compute Cluster**
+   - Primary compute resources
+   - Application processing
+   - Workload management
+
+### AWS Cloud Components
+1. **Backup/Burst Services**
+   - **EKS for DR/Burst**: Elastic Kubernetes Service for backup and scaling
+   - Handles overflow capacity
+   - Supports disaster recovery
+
+2. **DR/Backup Services**
+   - **RDS Backup**: Database backup and replication
+   - **S3 Backup Storage**: Object storage backup
+   - **ElastiCache**: In-memory data caching
+
+3. **Event Services**
+   - **MSK**: Managed Kafka service
+   - Event streaming platform
+   - Asynchronous messaging
+
+4. **Networking**
+   - **VPC**: Virtual Private Cloud infrastructure
+   - **Route53**: DNS and routing services
+
+### External Components
+- **External Users**: End users and customers
+- **External Systems**: Partner systems and third-party services
+
+### Connection Types
+- **Solid Lines (→)**: Primary data flow
+- **Dotted Lines (--->)**: Backup and DR connections
+- **Bidirectional Lines (<-->)**: Two-way communication
+
 ## Components Description
 
 ### 1. Network Connectivity

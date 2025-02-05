@@ -63,6 +63,64 @@ graph TB
     API <--> EventBus
 ```
 
+## Architecture Components
+
+### On-Premises Components
+1. **Applications Layer**
+   - **CX Applications**: Customer experience applications for end-user interaction
+   - **E-Applications**: Internal enterprise applications and business systems
+   - **API Services**: Service endpoints for internal and external integrations
+   - **GraphQL BFF**: Backend-For-Frontend layer for optimized data aggregation
+   - **API Gateway**: Centralized entry point for all API traffic management
+
+2. **Primary Container Platform**
+   - Primary orchestration platform for containerized applications
+   - Hosts microservices and application workloads
+   - Manages container lifecycle and scaling
+
+3. **Primary Databases**
+   - Main operational databases for business data
+   - Transactional and analytical data storage
+   - Critical business data repositories
+
+4. **Primary Storage Systems**
+   - Primary file and object storage systems
+   - Business document and media storage
+   - Application data storage
+
+5. **Compute Cluster**
+   - Main processing infrastructure
+   - Hosts compute-intensive workloads
+   - Manages application processing needs
+
+### Cloud Components
+1. **Backup/Burst Services**
+   - **Backup Container Service**: Secondary container platform for DR and scaling
+   - Provides burst capacity during peak loads
+   - Supports development and testing environments
+
+2. **DR/Backup Services**
+   - **Backup Databases**: Secondary database systems for DR
+   - **Backup Storage**: Secondary storage for data protection
+   - **Cache Service**: Distributed caching for performance
+
+3. **Event Services**
+   - **Message/Event Bus**: Enterprise messaging and event streaming
+   - Enables asynchronous communication
+   - Supports event-driven architecture
+
+4. **Networking**
+   - **Cloud Network**: Cloud connectivity services
+   - **DNS Services**: Domain name resolution and routing
+
+### External Components
+- **External Users**: End users accessing applications and services
+- **External Systems**: Third-party systems and partner integrations
+
+### Connection Types
+- **Solid Lines (→)**: Primary application traffic flow
+- **Dotted Lines (--->)**: Backup and DR replication paths
+- **Bidirectional Lines (<-->)**: Two-way communication flows
 
 ## Core Components
 
