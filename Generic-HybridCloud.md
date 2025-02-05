@@ -10,20 +10,21 @@ graph TB
     subgraph OnPrem[On-Premises Data Center]
         direction TB
         Apps[Applications]
-        ContainerPlatform[Container Platform]
-        LocalDB[(Local Databases)]
-        LocalStorage[Storage Systems]
+        ContainerPlatform[Primary Container Platform]
+        PrimaryDB[(Primary Databases)]
+        PrimaryStorage[Primary Storage Systems]
+        ComputeCluster[Compute Cluster]
     end
 
     subgraph Cloud[Public Cloud]
         direction TB
-        subgraph Compute[Container Services]
-            ManagedContainers[Managed Container Service]
+        subgraph Compute[Backup/Burst Services]
+            BackupContainers[Backup Container Service]
         end
         
-        subgraph Data[Data Services]
-            ManagedDB[(Managed Databases)]
-            ObjectStorage[(Object Storage)]
+        subgraph Data[DR/Backup Services]
+            BackupDB[(Backup Databases)]
+            BackupStorage[(Backup Storage)]
             Cache[(Cache Service)]
         end
         
@@ -39,11 +40,11 @@ graph TB
 
     OnPrem <--> |Dedicated Connection/VPN| Network
     Apps --> ContainerPlatform
-    ContainerPlatform <--> ManagedContainers
-    LocalDB <--> ManagedDB
-    LocalStorage <--> ObjectStorage
+    Apps --> ComputeCluster
+    ContainerPlatform <-.->|Burst/DR| BackupContainers
+    PrimaryDB <-.->|Backup/DR| BackupDB
+    PrimaryStorage <-.->|Backup/DR| BackupStorage
     Apps <--> EventBus
-    ContainerPlatform <--> Cache
 ```
 
 
