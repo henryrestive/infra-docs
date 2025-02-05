@@ -67,11 +67,13 @@ graph TB
 
 ### On-Premises Components
 1. **Applications Layer**
-   - **CX Applications**: Customer experience applications for end-user interaction
-   - **E-Applications**: Internal enterprise applications and business systems
+   - **C-App**: New CX and business processes workflow application
+   - **E-App**: New business processes and workflow automation stack for employees
    - **API Services**: Service endpoints for internal and external integrations
-   - **GraphQL BFF**: Backend-For-Frontend layer for optimized data aggregation
-   - **API Gateway**: Centralized entry point for all API traffic management
+     - **Business Support Modules**: Core business functionality APIs
+     - **Custom APIs**: Custom-built integration endpoints
+   - **GraphQL BFF**: Backend-For-Frontend for data aggregation
+   - **API Gateway**: Central entry point for API traffic management
 
 2. **Primary Container Platform**
    - Primary orchestration platform for containerized applications

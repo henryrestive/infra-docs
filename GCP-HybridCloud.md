@@ -10,9 +10,12 @@ graph TB
     subgraph OnPrem[On-Premises Data Center]
         direction TB
         subgraph Apps[Applications Layer]
-            CX[CX Applications]
-            EApp[E-Applications]
-            API[API Services]
+            CApp[C-App]
+            EApp[E-App]
+            subgraph API[API Services]
+                BSM[Business Support Modules]
+                CustomAPI[Custom APIs]
+            end
             BFF[GraphQL BFF]
             Gateway[API Gateway]
         end
@@ -48,9 +51,10 @@ graph TB
     ExternalUsers((External Users))
     ExternalSystems((External Systems))
 
-    CX & EApp & API --> BFF
-    API --> Gateway
-    Gateway --> API
+    CApp & EApp --> BFF
+    BSM & CustomAPI --> Gateway
+    Gateway --> BSM
+    Gateway --> CustomAPI
     ExternalUsers --> Gateway
     ExternalSystems --> Gateway
     BFF --> ContainerPlatform
@@ -60,16 +64,18 @@ graph TB
     ContainerPlatform <-.->|Burst/DR| GKE
     PrimaryDB <-.->|Backup/DR| CloudSQL
     PrimaryStorage <-.->|Backup/DR| CloudStorage
-    API <--> PubSub
+    BSM & CustomAPI <--> PubSub
 ```
 
 ## Architecture Components
 
 ### On-Premises Components
 1. **Applications Layer**
-   - **CX Applications**: Customer experience applications and portals
-   - **E-Applications**: Enterprise business applications and workflows
-   - **API Services**: Internal and external API endpoints
+   - **C-App**: New CX and business processes workflow application
+   - **E-App**: New business processes and workflow automation stack for employees
+   - **API Services**: Service endpoints for internal and external integrations
+     - **Business Support Modules**: Core business functionality APIs
+     - **Custom APIs**: Custom-built integration endpoints
    - **GraphQL BFF**: Backend-For-Frontend for data aggregation
    - **API Gateway**: Central entry point for API traffic management
 
