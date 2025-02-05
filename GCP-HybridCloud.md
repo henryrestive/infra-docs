@@ -40,12 +40,6 @@ graph TB
             GKE[Google Kubernetes Engine]
         end
         
-        subgraph Data[DR/Backup Services]
-            CloudSQL[(Cloud SQL Backup)]
-            CloudStorage[(Cloud Storage Backup)]
-            MemoryStore[(Memory Store)]
-        end
-        
         subgraph Messaging[Event Services]
             PubSub[Cloud Pub/Sub]
         end
