@@ -31,17 +31,17 @@ graph TB
 
     subgraph AWS[AWS Cloud]
         direction TB
+        subgraph Network[Networking]
+            VPC[Amazon VPC]
+            Route53[Route 53]
+        end
+        
         subgraph Compute[Container Services]
             EKS[Amazon EKS]
         end
         
         subgraph Messaging[Event Services]
             MSK[Amazon MSK]
-        end
-        
-        subgraph Network[Networking]
-            VPC[Amazon VPC]
-            Route53[Route 53]
         end
     end
 
@@ -62,8 +62,11 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    ContainerPlatform <-.->|Container Orchestration| EKS
-    BSM & CustomAPI <--> MSK
+    ContainerPlatform --> VPC
+    VPC --> EKS
+    BSM --> VPC
+    CustomAPI --> VPC
+    VPC --> MSK
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
 ```

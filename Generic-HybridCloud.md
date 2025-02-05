@@ -31,17 +31,17 @@ graph TB
 
     subgraph Cloud[Public Cloud]
         direction TB
+        subgraph Network[Networking]
+            CloudNet[Cloud Network]
+            DNS[DNS Services]
+        end
+        
         subgraph Compute[Container Services]
             ContainerService[Container Orchestration Service]
         end
         
         subgraph Messaging[Event Services]
             EventBus[Message/Event Bus]
-        end
-        
-        subgraph Network[Networking]
-            CloudNet[Cloud Network]
-            DNS[DNS Services]
         end
     end
 
@@ -62,8 +62,11 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    ContainerPlatform <-.->|Container Orchestration| ContainerService
-    BSM & CustomAPI <--> EventBus
+    ContainerPlatform --> CloudNet
+    CloudNet --> ContainerService
+    BSM --> CloudNet
+    CustomAPI --> CloudNet
+    CloudNet --> EventBus
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
 ```

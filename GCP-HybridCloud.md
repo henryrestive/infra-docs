@@ -31,6 +31,11 @@ graph TB
 
     subgraph GCP[Google Cloud]
         direction TB
+        subgraph Network[Networking]
+            VPC[Cloud VPC]
+            CloudDNS[Cloud DNS]
+        end
+        
         subgraph Compute[Container Services]
             GKE[Google Kubernetes Engine]
         end
@@ -43,11 +48,6 @@ graph TB
         
         subgraph Messaging[Event Services]
             PubSub[Cloud Pub/Sub]
-        end
-        
-        subgraph Network[Networking]
-            VPC[Cloud VPC]
-            CloudDNS[Cloud DNS]
         end
     end
 
@@ -68,10 +68,11 @@ graph TB
     ContainerPlatform --> PrimaryDB
     ContainerPlatform --> PrimaryStorage
     ContainerPlatform --> CacheService
-    ContainerPlatform <-.->|Container Orchestration| GKE
-    PrimaryDB <-.->|Backup/DR| CloudSQL
-    PrimaryStorage <-.->|Backup/DR| CloudStorage
-    BSM & CustomAPI <--> PubSub
+    ContainerPlatform --> VPC
+    VPC --> GKE
+    BSM --> VPC
+    CustomAPI --> VPC
+    VPC --> PubSub
 
     classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
 ```
