@@ -21,7 +21,7 @@ graph TB
         end
         
         subgraph Infrastructure[Infrastructure Layer]
-            ServersFarm[Servers Farm]:::serversFarm
+            ServersFarm[Servers Farm]
             ContainerPlatform[Primary Container Platform]
             PrimaryDB[(Primary Databases)]
             PrimaryStorage[Primary Storage Systems]
@@ -67,8 +67,6 @@ graph TB
     Infrastructure --> Network
     CloudNet --> ContainerService
     CloudNet --> EventBus
-
-    classDef serversFarm fill:#f9f,stroke:#333,stroke-width:2px;
 ```
 
 ## Architecture Components
