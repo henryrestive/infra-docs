@@ -1,3 +1,51 @@
+# AWS Hybrid Cloud Architecture Guide
+
+## Overview
+This document outlines a hybrid cloud architecture leveraging both AWS cloud services and on-premises infrastructure. The architecture includes Amazon RDS, ElastiCache, S3, and MSK (Managed Streaming for Apache Kafka) integrated with on-premises resources.
+
+## Architecture Diagram 
+
+```mermaid
+graph TB
+    subgraph OnPrem[On-Premises Data Center]
+        direction TB
+        Apps[Applications]
+        ContainerPlatform[Container Platform]
+        LocalDB[(Local Databases)]
+        LocalStorage[Storage Systems]
+    end
+
+    subgraph AWS[AWS Cloud]
+        direction TB
+        subgraph Compute[Container Services]
+            EKS[Amazon EKS]
+        end
+        
+        subgraph Data[Data Services]
+            RDS[(Amazon RDS)]
+            S3[(Amazon S3)]
+            ElastiCache[(ElastiCache)]
+        end
+        
+        subgraph Messaging[Event Services]
+            MSK[Amazon MSK]
+        end
+        
+        subgraph Network[Networking]
+            VPC[Amazon VPC]
+            Route53[Route 53]
+        end
+    end
+
+    OnPrem <--> |Direct Connect/VPN| Network
+    Apps --> ContainerPlatform
+    ContainerPlatform <--> EKS
+    LocalDB <--> RDS
+    LocalStorage <--> S3
+    Apps <--> MSK
+    ContainerPlatform <--> ElastiCache
+```
+
 ## Components Description
 
 ### 1. Network Connectivity

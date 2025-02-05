@@ -1,3 +1,51 @@
+# GCP Hybrid Cloud Architecture Guide
+
+## Overview
+This document outlines a hybrid cloud architecture leveraging both Google Cloud Platform (GCP) services and on-premises infrastructure. The architecture includes Google Kubernetes Engine (GKE), Cloud Storage, Cloud SQL, and Pub/Sub integrated with on-premises resources.
+
+## Architecture Diagram 
+
+```mermaid
+graph TB
+    subgraph OnPrem[On-Premises Data Center]
+        direction TB
+        Apps[Applications]
+        ContainerPlatform[Container Platform]
+        LocalDB[(Local Databases)]
+        LocalStorage[Storage Systems]
+    end
+
+    subgraph GCP[Google Cloud]
+        direction TB
+        subgraph Compute[Container Services]
+            GKE[Google Kubernetes Engine]
+        end
+        
+        subgraph Data[Data Services]
+            CloudSQL[(Cloud SQL)]
+            CloudStorage[(Cloud Storage)]
+            MemoryStore[(Memory Store)]
+        end
+        
+        subgraph Messaging[Event Services]
+            PubSub[Cloud Pub/Sub]
+        end
+        
+        subgraph Network[Networking]
+            VPC[Cloud VPC]
+            CloudDNS[Cloud DNS]
+        end
+    end
+
+    OnPrem <--> |Cloud Interconnect/VPN| Network
+    Apps --> ContainerPlatform
+    ContainerPlatform <--> GKE
+    LocalDB <--> CloudSQL
+    LocalStorage <--> CloudStorage
+    Apps <--> PubSub
+    ContainerPlatform <--> MemoryStore
+```
+
 ## Core Components
 
 ### 1. Hybrid Connectivity
