@@ -7,37 +7,43 @@ This document outlines a provider-agnostic hybrid cloud architecture that combin
 
 ```mermaid
 graph TB
-subgraph OnPrem[On-Premises Data Center]
-direction TB
-Apps[Applications]
-LocalDB[(Local Databases)]
-LocalStorage[Storage Systems]
-K8s[Kubernetes Clusters]
-end
-subgraph Cloud[Public Cloud]
-direction TB
-subgraph Compute[Container Services]
-ManagedK8s[Managed Kubernetes]
-end
-subgraph Data[Data Services]
-ManagedDB[(Managed Databases)]
-ObjectStorage[(Object Storage)]
-Cache[(Cache Service)]
-end
-subgraph Messaging[Event Services]
-EventBus[Message/Event Bus]
-end
-subgraph Network[Networking]
-CloudNet[Cloud Network]
-DNS[DNS Services]
-end
-end
-OnPrem <--> |Dedicated Connection/VPN| Network
-Apps <--> ManagedK8s
-LocalDB <--> ManagedDB
-LocalStorage <--> ObjectStorage
-K8s <--> ManagedK8s
-Apps <--> EventBus
+    subgraph OnPrem[On-Premises Data Center]
+        direction TB
+        Apps[Applications]
+        ContainerPlatform[Container Platform]
+        LocalDB[(Local Databases)]
+        LocalStorage[Storage Systems]
+    end
+
+    subgraph Cloud[Public Cloud]
+        direction TB
+        subgraph Compute[Container Services]
+            ManagedContainers[Managed Container Service]
+        end
+        
+        subgraph Data[Data Services]
+            ManagedDB[(Managed Databases)]
+            ObjectStorage[(Object Storage)]
+            Cache[(Cache Service)]
+        end
+        
+        subgraph Messaging[Event Services]
+            EventBus[Message/Event Bus]
+        end
+        
+        subgraph Network[Networking]
+            CloudNet[Cloud Network]
+            DNS[DNS Services]
+        end
+    end
+
+    OnPrem <--> |Dedicated Connection/VPN| Network
+    Apps --> ContainerPlatform
+    ContainerPlatform <--> ManagedContainers
+    LocalDB <--> ManagedDB
+    LocalStorage <--> ObjectStorage
+    Apps <--> EventBus
+    ContainerPlatform <--> Cache
 ```
 
 
