@@ -77,15 +77,14 @@ graph TD
     Employees --> EApp
     ExternalSystems --> Gateway
     Apps --> ContainerPlatform
+
+    %% Cloud connections
     Infrastructure --> Network
-    Network --> EKS
-    Network --> MSK
-    VPC --> EKS
-    EKS --> ContainerPlatform
-    VPC --> Access
-    DBAccess --> PrimaryDB
-    StorageAccess --> PrimaryStorage
-    CacheAccess --> CacheService
+    Network --> Access
+    Network --> Compute
+    Network --> Messaging
+    Compute --> Access
+    Compute --> Messaging
 
     classDef hidden opacity:0
 ```

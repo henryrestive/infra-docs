@@ -78,14 +78,14 @@ graph TD
     Employees --> EApp
     ExternalSystems --> Gateway
     Apps --> ContainerPlatform
+
+    %% Cloud connections
     Infrastructure --> Network
-    CloudNet --> ContainerService
-    ContainerService --> ContainerPlatform
-    CloudNet --> Access
-    DBAccess --> PrimaryDB
-    StorageAccess --> PrimaryStorage
-    CacheAccess --> CacheService
-    CloudNet --> EventBus
+    Network --> Access
+    Network --> Compute
+    Network --> Messaging
+    Compute --> Access
+    Compute --> Messaging
 
     classDef hidden opacity:0
 ```
