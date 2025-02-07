@@ -24,7 +24,6 @@ graph TD
         end
         
         subgraph Infrastructure[Infrastructure Layer]
-            ServersFarm[Servers Farm]
             PrimaryDB[(Primary Databases)]
             PrimaryStorage[Primary Storage Systems]
             CacheService[(Cache Service)]

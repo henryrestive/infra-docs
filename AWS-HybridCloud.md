@@ -23,7 +23,6 @@ graph TD
         end
         
         subgraph Infrastructure[Infrastructure Layer]
-            ServersFarm[Servers Farm]
             PrimaryDB[(Primary Databases)]
             PrimaryStorage[Primary Storage Systems]
             CacheService[(Cache Service)]
@@ -118,12 +117,7 @@ graph TD
    - Business data and documents
    - Application assets
 
-5. **Servers Farm**
-   - Primary compute resources
-   - Application processing
-   - Workload management
-
-### AWS Cloud Components
+## AWS Cloud Components
 1. **Container Services**
    - **EKS**: Elastic Kubernetes Service for container orchestration
 
