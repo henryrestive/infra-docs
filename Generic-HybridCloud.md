@@ -22,7 +22,6 @@ graph TB
         
         subgraph Infrastructure[Infrastructure Layer]
             ServersFarm[Servers Farm]
-            ContainerPlatform[Primary Container Platform]
             PrimaryDB[(Primary Databases)]
             PrimaryStorage[Primary Storage Systems]
             CacheService[(Cache Service)]
@@ -38,8 +37,15 @@ graph TB
         
         subgraph Compute[Container Services]
             ContainerService[Container Orchestration Service]
+            ContainerPlatform[Primary Container Platform]
         end
         
+        subgraph Access[Access Points]
+            DBAccess[Database Access]
+            StorageAccess[Storage Access]
+            CacheAccess[Cache Access]
+        end
+
         subgraph Messaging[Event Services]
             EventBus[Message/Event Bus]
         end
@@ -60,12 +66,13 @@ graph TB
     Employees --> EApp
     ExternalSystems --> Gateway
     Apps --> ContainerPlatform
-    ContainerPlatform --> ServersFarm
-    ContainerPlatform --> PrimaryDB
-    ContainerPlatform --> PrimaryStorage
-    ContainerPlatform --> CacheService
     Infrastructure --> Network
     CloudNet --> ContainerService
+    ContainerService --> ContainerPlatform
+    CloudNet --> Access
+    DBAccess --> PrimaryDB
+    StorageAccess --> PrimaryStorage
+    CacheAccess --> CacheService
     CloudNet --> EventBus
 ```
 
