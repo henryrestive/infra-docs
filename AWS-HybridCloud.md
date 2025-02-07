@@ -6,9 +6,11 @@ This document outlines a hybrid cloud architecture leveraging both AWS cloud ser
 ## Architecture Diagram 
 
 ```mermaid
-graph TB
+graph TD
+    %% Define main layout direction
+    direction TB
+    
     subgraph OnPrem[On-Premises Data Center]
-        direction TB
         subgraph Apps[Applications Layer]
             CApp[C-App]
             EApp[E-App]
@@ -27,6 +29,16 @@ graph TB
             CacheService[(Cache Service)]
         end
     end
+
+    %% Blank space for separation
+    Space1[" "]:::hidden
+    Space2[" "]:::hidden
+    OnPrem --- Space1
+    Space1 --- Space2
+    Space2 --- Cloud
+    linkStyle 0 opacity:0
+    linkStyle 1 opacity:0
+    linkStyle 2 opacity:0
 
     subgraph AWS[AWS Cloud]
         direction TB
@@ -75,6 +87,8 @@ graph TB
     DBAccess --> PrimaryDB
     StorageAccess --> PrimaryStorage
     CacheAccess --> CacheService
+
+    classDef hidden opacity:0
 ```
 
 ## Architecture Components
