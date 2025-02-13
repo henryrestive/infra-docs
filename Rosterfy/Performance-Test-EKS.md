@@ -1,4 +1,63 @@
-### **📌 Extending Performance Testing for Load, Stress, and Endurance on Serverless EKS with Flux**
+### **📌 Performance Testing for Load, Stress, and Endurance on Serverless EKS with Flux**
+
+#### **🔄 GitOps Workflow and Test Execution Architecture**
+```mermaid
+flowchart TD
+    Git["GitHub Repository"] -->|GitOps| Flux["Flux Controller"]
+    Flux -->|Deploys| EKS["EKS Cluster"]
+    
+    subgraph AWS["AWS Cloud"]
+        EKS -->|Runs on| Fargate["AWS Fargate"]
+        subgraph "Performance Tests"
+            Load["Load Test Job"]
+            Stress["Stress Test Job"]
+            Endurance["Endurance Test Job"]
+        end
+        
+        Fargate --> Load
+        Fargate --> Stress
+        Fargate --> Endurance
+        
+        Load -->|Generates| Results1["Test Results"]
+        Stress -->|Generates| Results2["Test Results"]
+        Endurance -->|Generates| Results3["Test Results"]
+        
+        Results1 -->|Stores| S3["S3 Bucket"]
+        Results2 -->|Stores| S3
+        Results3 -->|Stores| S3
+    end
+    
+    S3 -->|Provides| Reports["Allure Reports"]
+```
+
+#### **🔗 Inter-Cluster Communication Architecture**
+```mermaid
+flowchart TD
+    subgraph VPC["Same VPC"]
+        subgraph "Performance Test EKS"
+            JMeter["JMeter Pods"]
+            Metrics["Metrics Collector"]
+        end
+
+        subgraph "Target Application EKS"
+            direction TB
+            API["API Services"]
+            DB["Databases"]
+            Cache["Cache"]
+            API --> DB
+            API --> Cache
+        end
+
+        JMeter -->|"HTTP/HTTPS Requests"| API
+        Metrics -->|"Collect System Metrics"| API
+        Metrics -->|"Collect System Metrics"| DB
+        Metrics -->|"Collect System Metrics"| Cache
+    end
+
+    JMeter -->|"Export Results"| S3["S3 Bucket"]
+    Metrics -->|"Export Metrics"| CloudWatch["CloudWatch"]
+```
+
 Since you are running JMeter on a separate **serverless EKS cluster**, we will optimize the solution to:  
 ✔ **Automate deployment and configuration** using **Flux for GitOps**.  
 ✔ **Run everything on AWS Fargate for a fully serverless setup.**  
