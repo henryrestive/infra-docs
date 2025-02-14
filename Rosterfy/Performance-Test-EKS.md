@@ -36,7 +36,7 @@ flowchart TD
     subgraph VPC["Same VPC"]
         subgraph "Performance Test EKS"
             JMeter["JMeter Pods"]
-            DD1["Datadog Agent"]
+            Agent1["Monitoring Agent"]
         end
 
         subgraph "Target Application EKS"
@@ -44,7 +44,7 @@ flowchart TD
             API["API Services"]
             DB["Databases"]
             Cache["Cache"]
-            DD2["Datadog Agent"]
+            Agent2["Monitoring Agent"]
             API --> DB
             API --> Cache
         end
@@ -52,14 +52,15 @@ flowchart TD
         JMeter -->|"HTTP/HTTPS Requests"| API
     end
 
-    DD1 -->|"System Metrics"| Datadog["Datadog Platform"]
-    DD2 -->|"System Metrics"| Datadog
+    Agent1 -->|"System Metrics"| Monitor["Monitoring Platform"]
+    Agent2 -->|"System Metrics"| Monitor
     JMeter -->|"Export Results"| S3["S3 Bucket"]
     
     subgraph "Observability"
-        Datadog -->|"Performance Dashboards"| Metrics["Metrics & APM"]
-        Datadog -->|"Resource Usage"| Resources["Resource Monitoring"]
-        Datadog -->|"Trace Analysis"| Traces["Distributed Tracing"]
+        Monitor -->|"View"| Metrics["Performance Metrics"]
+        Monitor -->|"Track"| Resources["Resource Utilization"]
+        Monitor -->|"Analyze"| Traces["Request Tracing"]
+        Monitor -->|"Alert"| Alerts["Alerts & Notifications"]
     end
 ```
 
