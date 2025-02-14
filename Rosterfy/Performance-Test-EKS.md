@@ -36,7 +36,7 @@ flowchart TD
     subgraph VPC["Same VPC"]
         subgraph "Performance Test EKS"
             JMeter["JMeter Pods"]
-            Metrics["Metrics Collector"]
+            DD1["Datadog Agent"]
         end
 
         subgraph "Target Application EKS"
@@ -44,18 +44,23 @@ flowchart TD
             API["API Services"]
             DB["Databases"]
             Cache["Cache"]
+            DD2["Datadog Agent"]
             API --> DB
             API --> Cache
         end
 
         JMeter -->|"HTTP/HTTPS Requests"| API
-        Metrics -->|"Collect System Metrics"| API
-        Metrics -->|"Collect System Metrics"| DB
-        Metrics -->|"Collect System Metrics"| Cache
     end
 
+    DD1 -->|"System Metrics"| Datadog["Datadog Platform"]
+    DD2 -->|"System Metrics"| Datadog
     JMeter -->|"Export Results"| S3["S3 Bucket"]
-    Metrics -->|"Export Metrics"| CloudWatch["CloudWatch"]
+    
+    subgraph "Observability"
+        Datadog -->|"Performance Dashboards"| Metrics["Metrics & APM"]
+        Datadog -->|"Resource Usage"| Resources["Resource Monitoring"]
+        Datadog -->|"Trace Analysis"| Traces["Distributed Tracing"]
+    end
 ```
 
 ### **🎯 Cluster Separation Strategy**
