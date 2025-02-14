@@ -98,6 +98,32 @@ Instead of **physical nodes**, we will use:
 
 ---
 
+## **🎯 Types of Performance Tests**
+
+### **📊 Load Testing**
+Load testing simulates expected real-world usage to:
+- Verify system behavior under normal and peak load conditions
+- Measure response times, throughput, and resource utilization
+- Ensure the system meets performance requirements
+- Identify performance bottlenecks under expected load
+- Typically runs for 1-2 hours with gradual user increase
+
+### **💪 Stress Testing**
+Stress testing pushes the system beyond normal operating capacity to:
+- Find the breaking point of the system
+- Understand failure modes and recovery behavior
+- Identify maximum capacity limits
+- Test system stability under extreme conditions
+- Usually runs for shorter periods (30-60 minutes) with aggressive load
+
+### **⏳ Endurance Testing**
+Endurance testing (also called soak testing) runs for extended periods to:
+- Detect memory leaks and resource depletion
+- Verify system stability over time
+- Identify performance degradation patterns
+- Test system recovery and maintenance processes
+- Typically runs for 24-72 hours under sustained load
+
 ## **🔹 1. Setting Up the Serverless EKS Cluster for Performance Testing with Flux**
 ### **📌 Deploying EKS with eksctl**
 #### **📝 `eks-cluster.yaml` (Using Fargate & Flux)**
