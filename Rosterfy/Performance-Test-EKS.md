@@ -58,6 +58,24 @@ flowchart TD
     Metrics -->|"Export Metrics"| CloudWatch["CloudWatch"]
 ```
 
+### **🎯 Cluster Separation Strategy**
+We deliberately separate the performance testing infrastructure from the target application cluster for several critical reasons:
+
+1. **Resource Isolation**
+   - Prevents performance tests from consuming application cluster resources
+   - Ensures test load generation isn't constrained by application resource limits
+   - Maintains application performance for real users during testing
+
+2. **Accurate Results**
+   - Eliminates resource contention between test tools and application
+   - Provides more reliable and consistent test measurements
+   - Better reflects real-world user experience
+
+3. **Operational Safety**
+   - Reduces risk of impacting production workloads
+   - Allows aggressive testing without compromising application stability
+   - Enables independent scaling of test infrastructure
+
 Since you are running JMeter on a separate **serverless EKS cluster**, we will optimize the solution to:  
 ✔ **Automate deployment and configuration** using **Flux for GitOps**.  
 ✔ **Run everything on AWS Fargate for a fully serverless setup.**  
